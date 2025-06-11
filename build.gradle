@@ -1,0 +1,107 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2025.0.0")
+}
+
+dependencies {
+    // Jenkins Java Client
+    implementation "com.offbytwo.jenkins:jenkins-client"
+
+    // SonarQube 연동을 위한 WebClient
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+
+    // Docker Remote API
+    implementation "com.github.docker-java:docker-java"
+
+    // Kubernetes Client (fabric8)
+    implementation "io.fabric8:kubernetes-client:6.10.0"
+
+    // Spring Cloud Kubernetes (fabric8 기반)
+    implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8"
+
+    // Helm/Kustomize CLI 실행 (Shell 명령 실행용)
+    implementation "org.zeroturnaround:zt-exec"
+
+    // Micrometer + Prometheus
+    implementation "io.micrometer:micrometer-registry-prometheus"
+
+    // Spring Actuator (Prometheus 엔드포인트 제공)
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+
+    // spring
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'io.jsonwebtoken:jjwt:0.12.3'
+
+    // ORM
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.8.2'
+
+    // DB
+    implementation 'org.springframework.boot:spring-boot-starter-data-cassandra'
+    implementation 'org.springframework.boot:spring-boot-starter-data-cassandra-reactive'
+
+    // async
+    implementation 'org.apache.kafka:kafka-streams'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springframework.amqp:spring-rabbit-stream'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // cloud
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+    implementation 'org.springframework.cloud:spring-cloud-starter-zookeeper-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.named('bootBuildImage') {
+    builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
