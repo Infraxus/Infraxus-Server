@@ -1,0 +1,68 @@
+package com.infraxus.global.jenkins;
+
+import com.offbytwo.jenkins.JenkinsServer;
+import com.offbytwo.jenkins.model.BuildWithDetails;
+import com.offbytwo.jenkins.model.Job;
+import com.offbytwo.jenkins.model.JobWithDetails;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+public class JenkinsService {
+    private final JenkinsServer jenkinsServer;
+
+    public Map<String, Job> getAllJobs() throws IOException {
+        return jenkinsServer.getJobs();
+    }
+
+    public JobWithDetails getJob(String jobName) throws IOException {
+        return jenkinsServer.getJob(jobName);
+    }
+
+    public void createJob(String jobName, String xml) throws IOException {
+        jenkinsServer.createJob(jobName, xml);
+    }
+
+    public void deleteJob(String jobName) throws IOException {
+        jenkinsServer.deleteJob(jobName);
+    }
+
+    public void triggerJob(String jobName) throws IOException {
+        Job job = jenkinsServer.getJob(jobName);
+        if (job != null) {
+            job.build();
+        } else {
+            throw new IOException("Job not found: " + jobName);
+        }
+    }
+
+    public BuildWithDetails getLastBuildDetails(String jobName) throws IOException {
+        JobWithDetails job = jenkinsServer.getJob(jobName);
+        if (job != null) {
+            return job.getLastBuild().details();
+        } else {
+            throw new IOException("Job not found: " + jobName);
+        }
+    }
+
+    public String getBuildLog(String jobName, int buildNumber) throws IOException {
+        JobWithDetails job = jenkinsServer.getJob(jobName);
+        if (job != null) {
+            return job.getBuildByNumber(buildNumber).details().getConsoleOutputText();
+        } else {
+            throw new IOException("Job not found: " + jobName);
+        }
+    }
+
+    public String getJobXml(String jobName) throws IOException {
+        return jenkinsServer.getJobXml(jobName);
+    }
+
+    public void updateJobXml(String jobName, String xml) throws IOException {
+        jenkinsServer.updateJob(jobName, xml);
+    }
+}
