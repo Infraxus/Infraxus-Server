@@ -28,61 +28,55 @@ ext {
 
 dependencies {
     // Jenkins Java Client
-    implementation "com.offbytwo.jenkins:jenkins-client"
+    implementation "com.offbytwo.jenkins:jenkins-client:0.3.8"
 
     // SonarQube 연동을 위한 WebClient
-    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    // implementation "org.springframework.boot:spring-boot-starter-webflux" // MVC와 충돌 가능성 있어 주석 처리
 
-    // Docker Remote API
-    implementation "com.github.docker-java:docker-java"
+    
 
     // Kubernetes Client (fabric8)
     implementation "io.fabric8:kubernetes-client:6.10.0"
+
+    
 
     // Spring Cloud Kubernetes (fabric8 기반)
     implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8"
 
     // Helm/Kustomize CLI 실행 (Shell 명령 실행용)
-    implementation "org.zeroturnaround:zt-exec"
+    implementation "org.zeroturnaround:zt-exec:1.12"
 
     // Micrometer + Prometheus
     implementation "io.micrometer:micrometer-registry-prometheus"
-
-    // Spring Actuator (Prometheus 엔드포인트 제공)
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
 
     // spring
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-    implementation 'io.jsonwebtoken:jjwt:0.12.3'
-
-    // ORM
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.8.2'
 
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-data-cassandra'
     implementation 'org.springframework.boot:spring-boot-starter-data-cassandra-reactive'
 
     // async
-    implementation 'org.apache.kafka:kafka-streams'
-    implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'org.springframework.amqp:spring-rabbit-stream'
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+//    implementation 'org.apache.kafka:kafka-streams'
+//    implementation 'org.springframework.kafka:spring-kafka'
+//    implementation 'org.springframework.amqp:spring-rabbit-stream'
+//    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
     // cloud
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
-    implementation 'org.springframework.cloud:spring-cloud-starter-zookeeper-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
+    // implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc' // 필요 시 주석 해제
+    // implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // 필요 시 주석 해제
+    // implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server' // 필요 시 주석 해제
+    // implementation 'org.springframework.cloud:spring-cloud-starter-zookeeper-config'      // 필요 시 주석 해제
+    // implementation 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'   // 필요 시 주석 해제
 
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
