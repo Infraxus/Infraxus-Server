@@ -4,16 +4,25 @@ import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.BuildWithDetails;
 import com.offbytwo.jenkins.model.Job;
 import com.offbytwo.jenkins.model.JobWithDetails;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class JenkinsService {
     private final JenkinsServer jenkinsServer;
+
+    public JenkinsService(
+            @Value("${jenkins.url}") String url,
+            @Value("${jenkins.username}") String username,
+            @Value("${jenkins.token}") String token
+    ) throws URISyntaxException {
+        this.jenkinsServer = new JenkinsServer(new URI(url), username, token);
+    }
 
     public Map<String, Job> getAllJobs() throws IOException {
         return jenkinsServer.getJobs();

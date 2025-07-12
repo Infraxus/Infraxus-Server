@@ -4,8 +4,7 @@ spring:
       "Infraxus"
 
   config:
-    import:
-      - optional:file:env/infraxus.env[.properties]
+    import: optional:file:env/infraxus.env[.properties]
 
   cassandra:
     contact-points: 127.0.0.1

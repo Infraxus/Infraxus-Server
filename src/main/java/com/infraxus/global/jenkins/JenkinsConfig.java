@@ -1,7 +1,6 @@
 package com.infraxus.global.jenkins;
 
 import com.offbytwo.jenkins.JenkinsServer;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@Getter
 @Configuration
 public class JenkinsConfig {
     @Value("${jenkins.url}")
@@ -21,8 +19,8 @@ public class JenkinsConfig {
     @Value("${jenkins.token}")
     private String token;
 
-    @Bean
-    public JenkinsServer jenkinsServer() throws URISyntaxException {
-        return new JenkinsServer(new URI(url), username, token);
-    }
+//    @Bean
+//    public JenkinsServer jenkinsServer() throws URISyntaxException {
+//        return new JenkinsServer(new URI(url), username, token);
+//    }
 }

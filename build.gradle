@@ -30,15 +30,15 @@ dependencies {
     // Jenkins Java Client
     implementation "com.offbytwo.jenkins:jenkins-client:0.3.8"
 
+    // JAXB for Java 11+
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
+
     // SonarQube 연동을 위한 WebClient
     // implementation "org.springframework.boot:spring-boot-starter-webflux" // MVC와 충돌 가능성 있어 주석 처리
 
-    
-
     // Kubernetes Client (fabric8)
     implementation "io.fabric8:kubernetes-client:6.10.0"
-
-    
 
     // Spring Cloud Kubernetes (fabric8 기반)
     implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8"
