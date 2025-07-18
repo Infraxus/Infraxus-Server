@@ -1,0 +1,56 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9095
+
+common:
+  path_prefix: /loki
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /loki/index
+    cache_location: /loki/cache
+  filesystem:
+    directory: /loki/chunks
+
+query_range:
+  align_queries_with_step: true
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+
+compactor:
+  working_directory: /loki/boltdb-shipper-compactor
+  compaction_interval: 10m
+
+limits_config:
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+  retention_period: 336h # 14 days
+
+ruler:
+  storage:
+    type: local
+    local:
+      directory: /loki/rules
+  rule_path: /tmp/loki/rules
+  alertmanager_url: http://localhost:9093
+  ring:
+    kvstore:
+      store: inmemory
+  enable_api: true
+

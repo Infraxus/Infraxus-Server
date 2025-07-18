@@ -1,0 +1,109 @@
+services:
+  # Spring Boot Application
+  infraxus-server:
+    build: .
+    container_name: infraxus-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JENKINS_URL=http://host.docker.internal:8080
+      - JENKINS_USERNAME=admin
+      - JENKINS_TOKEN=11eab6ea4adbdcd67c0d0e3ccfc186cfe6
+    depends_on:
+      cassandra: 
+        condition: service_healthy
+      prometheus:
+        condition: service_started
+      loki:
+        condition: service_started
+
+  # Cassandra Database
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=infraxus-cluster
+      - CASSANDRA_DC=datacenter1
+      - CASSANDRA_RACK=rack1
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+      interval: 30s
+      timeout: 15s
+      retries: 20
+
+  # Prometheus Monitoring Server
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    user: root
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-lifecycle'
+
+  # cAdvisor for Container Metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: cadvisor
+    ports:
+      - "8088:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  # Loki Log Aggregation System
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+      - ./src/main/resources/loki-config.yaml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Promtail Log Collector
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./src/main/resources/promtail-config.yml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      loki:
+        condition: service_healthy
+
+  # Grafana for Visualization (Metrics & Logs)
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: grafana
+    ports:
+      - "8000:8000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./src/main/resources/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    depends_on:
+      - prometheus
+      - loki
+
+volumes:
+  cassandra_data:
+  loki_data:
+  grafana_data:
