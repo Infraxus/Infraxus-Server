@@ -1,7 +1,7 @@
 package com.infraxus.application.setting.service;
 
 import com.infraxus.application.setting.domain.Setting;
-import com.infraxus.application.setting.domain.exception.SettingNotFoundException;
+import com.infraxus.application.setting.exception.SettingNotFoundException;
 import com.infraxus.application.setting.service.implementation.SettingReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

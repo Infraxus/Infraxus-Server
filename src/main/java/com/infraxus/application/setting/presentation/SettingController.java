@@ -20,11 +20,11 @@ public class SettingController {
     private final CommandSettingService commandSettingService;
     private final QuerySettingService querySettingService;
 
-    @PostMapping
-    public ResponseEntity<Void> createSetting(@RequestBody SettingCreateRequest request) {
-        commandSettingService.createSetting(request);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping
+//    public ResponseEntity<Void> createSetting(@RequestBody SettingCreateRequest request) {
+//        commandSettingService.createSetting(request);
+//        return ResponseEntity.ok().build();
+//    }
 
     @PutMapping("/{settingId}")
     public ResponseEntity<Void> updateSetting(@PathVariable UUID settingId, @RequestBody SettingUpdateRequest request) {
@@ -37,8 +37,8 @@ public class SettingController {
         return ResponseEntity.ok(querySettingService.findAll());
     }
 
-    @GetMapping("/{settingId}")
-    public ResponseEntity<Setting> getSettingById(@PathVariable UUID settingId) {
-        return ResponseEntity.ok(querySettingService.findById(settingId));
-    }
+//    @GetMapping("/{settingId}")
+//    public ResponseEntity<Setting> getSettingById(@PathVariable UUID settingId) {
+//        return ResponseEntity.ok(querySettingService.findById(settingId));
+//    }
 }

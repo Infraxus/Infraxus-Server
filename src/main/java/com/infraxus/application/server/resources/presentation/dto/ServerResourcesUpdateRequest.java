@@ -25,8 +25,7 @@ public class ServerResourcesUpdateRequest {
         return ServerResources.builder()
                 .cpuResources(this.cpuResources)
                 .memoryResources(this.memoryResources)
-                .storageResources(this.storageResources)
-                .gpuResources(this.gpuResources)
+                .diskResources(this.storageResources)
                 .build();
     }
 }

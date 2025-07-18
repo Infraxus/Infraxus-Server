@@ -1,7 +1,7 @@
 package com.infraxus.application.container.container.service;
 
 import com.infraxus.application.container.container.domain.Container;
-import com.infraxus.application.container.container.domain.exception.ContainerNotFoundException;
+import com.infraxus.application.container.container.exception.ContainerNotFoundException;
 import com.infraxus.application.container.container.service.implementation.ContainerReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,10 +23,22 @@ public class QueryContainerService {
         return containerReader.findById(id);
     }
 
+    public List<Container> findAllByServerId(UUID serverId) {
+        return containerReader.findAllByServerId(serverId);
+    }
+
     public Container getContainerById(UUID containerId) {
         Container container = containerReader.findById(containerId);
         if (container == null) {
             throw new ContainerNotFoundException("Container with ID " + containerId + " not found.");
+        }
+        return container;
+    }
+
+    public Container getContainerByDockerContainerId(String dockerContainerId) {
+        Container container = containerReader.findByDockerContainerId(dockerContainerId);
+        if (container == null) {
+            throw new ContainerNotFoundException("Container with Docker ID " + dockerContainerId + " not found.");
         }
         return container;
     }

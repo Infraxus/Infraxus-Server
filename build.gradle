@@ -57,10 +57,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'org.yaml:snakeyaml:2.2'
+    implementation 'org.json:json:20250517'
 
     // DB
     implementation 'org.springframework.boot:spring-boot-starter-data-cassandra'
-    implementation 'org.springframework.boot:spring-boot-starter-data-cassandra-reactive'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-cassandra-reactive'
 
     // async
 //    implementation 'org.apache.kafka:kafka-streams'
@@ -84,6 +86,9 @@ dependencies {
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // For JSON logging with Logback and Loki
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 }
 
 dependencyManagement {

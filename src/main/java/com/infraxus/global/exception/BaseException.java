@@ -1,14 +1,18 @@
 package com.infraxus.global.exception;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class BaseException extends RuntimeException {
-    private final HttpStatus status;
+    private final ErrorCode errorCode;
 
-    public BaseException(String message, HttpStatus status) {
+    public BaseException(String message, ErrorCode errorCode) {
         super(message);
-        this.status = status;
+        this.errorCode = errorCode;
+    }
+
+    public BaseException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
     }
 }

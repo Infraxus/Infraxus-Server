@@ -9,9 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table("server_resources")
 @Getter
+@Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +26,5 @@ public class ServerResources {
 
     private Integer memoryResources;
 
-    private Integer storageResources;
-
-    private Integer gpuResources;
+    private Integer diskResources;
 }

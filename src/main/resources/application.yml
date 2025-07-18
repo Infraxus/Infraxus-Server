@@ -7,7 +7,7 @@ spring:
     import: optional:file:env/infraxus.env[.properties]
 
   cassandra:
-    contact-points: 127.0.0.1
+    contact-points: cassandra
     port: 9042
     keyspace-name: infraxus
     schema-action: create_if_not_exists
@@ -22,9 +22,32 @@ docker:
   host: ${DOCKER_HOST}
   tls-verify: ${DOCKER_TLS_VERIFY}
 
+monitoring:
+  grafana:
+    url: http://host.docker.internal:8000
+
+prometheus:
+  url: http://localhost:9090 # 실제 Prometheus 주소로 변경해야 합니다.
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
 logging:
   level:
     root: INFO
     org.springframework.data.cassandra.core.cql: DEBUG
     com.datastax.oss.driver.internal.core.tracker.RequestLogger: DEBUG
     com.datastax.oss.driver: INFO
+
+infraxus:
+  scheduling:
+    healthCheckIntervalMs: 60000
+    loggingIntervalMs: 300000
+    alertingIntervalMs: 120000

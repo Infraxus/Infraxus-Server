@@ -12,7 +12,8 @@ public class ContainerLogUpdater {
     private final ContainerLogRepository containerLogRepository;
 
     public void update(ContainerLog updatableContainerLog, ContainerLog newContainerLogData){
-        updatableContainerLog.toBuilder()
+        ContainerLog updated = updatableContainerLog.toBuilder()
+                .containerId(updatableContainerLog.getContainerId())
                 .serverId(newContainerLogData.getServerId())
                 .logType(newContainerLogData.getLogType())
                 .logLevel(newContainerLogData.getLogLevel())
@@ -21,7 +22,7 @@ public class ContainerLogUpdater {
                 .stackTrace(newContainerLogData.getStackTrace())
                 .build();
 
-        containerLogRepository.save(updatableContainerLog);
+        containerLogRepository.save(updated);
     }
 
 }

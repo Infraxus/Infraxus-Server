@@ -24,8 +24,8 @@ public class DashboardController {
         return ResponseEntity.ok(queryDashboardService.findAll());
     }
 
-    @GetMapping("/{dashboardId}")
-    public ResponseEntity<Dashboard> getDashboardById(@PathVariable UUID dashboardId) {
-        return ResponseEntity.ok(queryDashboardService.findById(dashboardId));
-    }
+//    @GetMapping("/{dashboardId}")
+//    public ResponseEntity<Dashboard> getDashboardById(@PathVariable UUID dashboardId) {
+//        return ResponseEntity.ok(queryDashboardService.findById(dashboardId));
+//    }
 }

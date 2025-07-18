@@ -1,7 +1,7 @@
 package com.infraxus.application.dashboard.service;
 
 import com.infraxus.application.dashboard.domain.Dashboard;
-import com.infraxus.application.dashboard.domain.exception.DashboardNotFoundException;
+import com.infraxus.application.dashboard.exception.DashboardNotFoundException;
 import com.infraxus.application.dashboard.service.implementation.DashboardReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

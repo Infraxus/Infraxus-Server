@@ -1,8 +1,7 @@
 package com.infraxus.application.server.server.service;
 
 import com.infraxus.application.server.server.domain.Server;
-import com.infraxus.application.server.server.domain.exception.ServerNotFoundException;
-import com.infraxus.application.server.server.service.implementation.ServerReader;
+import com.infraxus.application.server.server.domain.repository.ServerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,21 +12,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class QueryServerService {
 
-    private final ServerReader serverReader;
-
-    public List<Server> findAll(){
-        return serverReader.findAll();
-    }
-
-    public Server findById(UUID id){
-        return serverReader.findById(id);
-    }
+    private final ServerRepository serverRepository;
 
     public Server getServerById(UUID serverId) {
-        Server server = serverReader.findById(serverId);
-        if (server == null) {
-            throw new ServerNotFoundException("Server with ID " + serverId + " not found.");
-        }
-        return server;
+        return serverRepository.findById(serverId).orElseThrow(() -> new RuntimeException("Server not found"));
+    }
+
+    public List<Server> getAllServers() {
+        return serverRepository.findAll();
     }
 }

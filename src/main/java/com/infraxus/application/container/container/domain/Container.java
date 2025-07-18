@@ -12,9 +12,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table("container")
 @Getter
+@Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +26,8 @@ public class Container {
     private UUID containerId;
 
     private UUID serverId;
+
+    private UUID deploymentId;
 
     private String containerName;
 
@@ -49,5 +53,13 @@ public class Container {
     private LocalDateTime createAt;
 
     private String image;
+
+    private LocalDateTime buildStartTime;
+
+    private LocalDateTime buildEndTime;
+
+    private Long buildDuration; // in milliseconds
+
+    private String dockerContainerId;
 
 }

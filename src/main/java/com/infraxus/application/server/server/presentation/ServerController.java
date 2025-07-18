@@ -2,13 +2,14 @@ package com.infraxus.application.server.server.presentation;
 
 import com.infraxus.application.server.server.domain.Server;
 import com.infraxus.application.server.server.presentation.dto.ServerCreateRequest;
-import com.infraxus.application.server.server.presentation.dto.ServerUpdateRequest;
 import com.infraxus.application.server.server.service.CommandServerService;
+import com.infraxus.application.server.server.service.MsaProjectService;
 import com.infraxus.application.server.server.service.QueryServerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,17 +20,16 @@ public class ServerController {
 
     private final CommandServerService commandServerService;
     private final QueryServerService queryServerService;
+    private final MsaProjectService msaProjectService;
 
-    @PostMapping
-    public ResponseEntity<Void> createServer(@RequestBody ServerCreateRequest request) {
-        commandServerService.createServer(request);
-        return ResponseEntity.ok().build();
+    @GetMapping("/{serverId}")
+    public ResponseEntity<Server> getServerById(@PathVariable UUID serverId) {
+        return ResponseEntity.ok(queryServerService.getServerById(serverId));
     }
 
-    @PutMapping("/{serverId}")
-    public ResponseEntity<Void> updateServer(@PathVariable UUID serverId, @RequestBody ServerUpdateRequest request) {
-        commandServerService.updateServer(serverId, request);
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public ResponseEntity<List<Server>> getAllServers() {
+        return ResponseEntity.ok(queryServerService.getAllServers());
     }
 
     @DeleteMapping("/{serverId}")
@@ -38,13 +38,31 @@ public class ServerController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<Server>> getAllServers() {
-        return ResponseEntity.ok(queryServerService.findAll());
+    @PostMapping("/{serverId}/restart")
+    public ResponseEntity<Void> restartServer(@PathVariable UUID serverId) {
+        commandServerService.restartServer(serverId);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{serverId}")
-    public ResponseEntity<Server> getServerById(@PathVariable UUID serverId) {
-        return ResponseEntity.ok(queryServerService.findById(serverId));
+    @PostMapping
+    public ResponseEntity<String> createServer(@RequestBody ServerCreateRequest request) {
+        try {
+            switch (request.getArchitectureType()) {
+                case MSA:
+                    msaProjectService.createNewMsaProject(request);
+                    return ResponseEntity.ok("MSA project '" + request.getServerName() + "' created successfully.");
+                case Monolithic:
+                    try {
+                        commandServerService.createServer(request);
+                        return ResponseEntity.ok("Monolithic server '" + request.getServerName() + "' created successfully.");
+                    } catch (IOException e) {
+                        return ResponseEntity.badRequest().body("Failed to create monolithic server: " + e.getMessage());
+                    }
+                default:
+                    return ResponseEntity.badRequest().body("Invalid architecture type.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to create server: " + e.getMessage());
+        }
     }
 }

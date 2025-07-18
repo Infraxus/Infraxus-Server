@@ -12,15 +12,13 @@ import java.util.UUID;
 public class ServerResourcesCreateRequest {
     private Integer cpuResources;
     private Integer memoryResources;
-    private Integer storageResources;
-    private Integer gpuResources;
+    private Integer diskResources;
 
     @Builder
-    public ServerResourcesCreateRequest(Integer cpuResources, Integer memoryResources, Integer storageResources, Integer gpuResources) {
+    public ServerResourcesCreateRequest(Integer cpuResources, Integer memoryResources, Integer diskResources, Integer gpuResources) {
         this.cpuResources = cpuResources;
         this.memoryResources = memoryResources;
-        this.storageResources = storageResources;
-        this.gpuResources = gpuResources;
+        this.diskResources = diskResources;
     }
 
     public ServerResources toEntity() {
@@ -28,8 +26,7 @@ public class ServerResourcesCreateRequest {
                 .serverId(UUID.randomUUID())
                 .cpuResources(this.cpuResources)
                 .memoryResources(this.memoryResources)
-                .storageResources(this.storageResources)
-                .gpuResources(this.gpuResources)
+                .diskResources(this.diskResources)
                 .build();
     }
 }

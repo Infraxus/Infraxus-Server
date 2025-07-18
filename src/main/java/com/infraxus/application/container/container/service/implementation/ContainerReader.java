@@ -23,4 +23,13 @@ public class ContainerReader {
                 .orElse(null);
     }
 
+    public List<Container> findAllByServerId(UUID serverId) {
+        return containerRepository.findAllByServerId(serverId);
+    }
+
+    public Container findByDockerContainerId(String dockerContainerId) {
+        return containerRepository.findByDockerContainerId(dockerContainerId)
+                .orElse(null);
+    }
+
 }

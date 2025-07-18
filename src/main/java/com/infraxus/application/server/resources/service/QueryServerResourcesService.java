@@ -1,7 +1,7 @@
 package com.infraxus.application.server.resources.service;
 
 import com.infraxus.application.server.resources.domain.ServerResources;
-import com.infraxus.application.server.resources.domain.exception.ServerResourcesNotFoundException;
+import com.infraxus.application.server.resources.exception.ServerResourcesNotFoundException;
 import com.infraxus.application.server.resources.service.implementation.ServerResourcesReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

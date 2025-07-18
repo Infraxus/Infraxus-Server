@@ -12,7 +12,8 @@ public class ContainerUpdater {
     private final ContainerRepository containerRepository;
 
     public void update(Container updatableContainer, Container newContainerData){
-        updatableContainer.toBuilder()
+        Container updated = updatableContainer.toBuilder()
+                .containerId(updatableContainer.getContainerId())
                 .serverId(newContainerData.getServerId())
                 .containerName(newContainerData.getContainerName())
                 .buildCount(newContainerData.getBuildCount())
@@ -27,7 +28,7 @@ public class ContainerUpdater {
                 .image(newContainerData.getImage())
                 .build();
 
-        containerRepository.save(updatableContainer);
+        containerRepository.save(updated);
     }
 
 }

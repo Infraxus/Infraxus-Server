@@ -12,7 +12,8 @@ public class DashboardUpdater {
     private final DashboardRepository dashboardRepository;
 
     public void update(Dashboard updatableDashboard, Dashboard newDashboardData){
-        updatableDashboard.toBuilder()
+        Dashboard updated = updatableDashboard.toBuilder()
+                .dashboardId(updatableDashboard.getDashboardId())
                 .totalServers(newDashboardData.getTotalServers())
                 .runningServers(newDashboardData.getRunningServers())
                 .errorServers(newDashboardData.getErrorServers())
@@ -21,7 +22,7 @@ public class DashboardUpdater {
                 .runningServerList(newDashboardData.getRunningServerList())
                 .build();
 
-        dashboardRepository.save(updatableDashboard);
+        dashboardRepository.save(updated);
     }
 
 }

@@ -1,41 +1,39 @@
 package com.infraxus.application.server.server.presentation.dto;
 
-import com.infraxus.application.server.server.domain.Server;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ServerUpdateRequest {
-    private String architectureType;
     private String serverName;
+    private String serverType;
+    private String jenkinsfilePath;
+    private String dockerComposeFilePath;
+
     private String serverState;
     private List<String> skillStack;
     private Boolean rollBack;
-    private LocalDateTime rebuildTime;
+    private java.time.LocalDateTime rebuildTime;
 
-    @Builder
-    public ServerUpdateRequest(String architectureType, String serverName, String serverState, List<String> skillStack, Boolean rollBack, LocalDateTime rebuildTime) {
-        this.architectureType = architectureType;
-        this.serverName = serverName;
-        this.serverState = serverState;
-        this.skillStack = skillStack;
-        this.rollBack = rollBack;
-        this.rebuildTime = rebuildTime;
-    }
+    // ServerResource
+    private Integer cpuResource;
+    private Integer memoryResource;
+    private Integer storageResource;
+    private Integer gpuResource;
 
-    public Server toEntity() {
-        return Server.builder()
-                .architectureType(this.architectureType)
-                .serverName(this.serverName)
-                .serverState(this.serverState)
-                .skillStack(this.skillStack)
-                .rollBack(this.rollBack)
-                .rebuildTime(this.rebuildTime)
-                .build();
-    }
+    // Deployment fields (for orchestration updates)
+    private String imageName;
+    private Integer targetReplicas;
+    private List<String> portBindings;
+    private List<String> envVars;
+    private List<String> volumes;
+    private String metricsPort;
+    private String network;
 }

@@ -12,14 +12,14 @@ public class ServerResourcesUpdater {
     private final ServerResourcesRepository serverResourcesRepository;
 
     public void update(ServerResources updatableServerResources, ServerResources newServerResourcesData){
-        updatableServerResources.toBuilder()
+        ServerResources updated = updatableServerResources.toBuilder()
+                .serverId(updatableServerResources.getServerId())
                 .cpuResources(newServerResourcesData.getCpuResources())
                 .memoryResources(newServerResourcesData.getMemoryResources())
-                .storageResources(newServerResourcesData.getStorageResources())
-                .gpuResources(newServerResourcesData.getGpuResources())
+                .diskResources(newServerResourcesData.getDiskResources())
                 .build();
 
-        serverResourcesRepository.save(updatableServerResources);
+        serverResourcesRepository.save(updated);
     }
 
 }

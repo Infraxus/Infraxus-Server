@@ -17,7 +17,6 @@ public class CommandSettingService {
 
     private final SettingCreator settingCreator;
     private final SettingUpdater settingUpdater;
-    private final SettingReader settingReader;
     private final QuerySettingService querySettingService;
 
     public void createSetting(SettingCreateRequest request){

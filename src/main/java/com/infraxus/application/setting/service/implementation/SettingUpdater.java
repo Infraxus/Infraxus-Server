@@ -12,14 +12,15 @@ public class SettingUpdater {
     private final SettingRepository settingRepository;
 
     public void update(Setting updatableSetting, Setting newSettingData){
-        updatableSetting.toBuilder()
+        Setting updated = updatableSetting.toBuilder()
+                .settingId(updatableSetting.getSettingId())
                 .cpuLimit(newSettingData.getCpuLimit())
                 .memoryLimit(newSettingData.getMemoryLimit())
                 .gpuLimit(newSettingData.getGpuLimit())
                 .storageLimit(newSettingData.getStorageLimit())
                 .build();
 
-        settingRepository.save(updatableSetting);
+        settingRepository.save(updated);
     }
 
 }

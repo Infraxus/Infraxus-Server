@@ -1,7 +1,7 @@
 package com.infraxus.application.container.log.service;
 
 import com.infraxus.application.container.log.domain.ContainerLog;
-import com.infraxus.application.container.log.domain.exception.ContainerLogNotFoundException;
+import com.infraxus.application.container.log.exception.ContainerLogNotFoundException;
 import com.infraxus.application.container.log.service.implementation.ContainerLogReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
