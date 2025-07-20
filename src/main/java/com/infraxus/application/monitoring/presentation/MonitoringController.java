@@ -3,10 +3,8 @@ package com.infraxus.application.monitoring.presentation;
 import com.infraxus.application.monitoring.presentation.dto.MetricResponse;
 import com.infraxus.application.monitoring.service.MonitoringService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.UUID;
 

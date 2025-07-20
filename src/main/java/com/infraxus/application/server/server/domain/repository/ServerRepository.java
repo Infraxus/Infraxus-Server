@@ -9,5 +9,4 @@ import java.util.UUID;
 
 @Repository
 public interface ServerRepository extends CassandraRepository<Server, UUID> {
-    Optional<Server> findByDeploymentId(UUID deploymentId);
 }

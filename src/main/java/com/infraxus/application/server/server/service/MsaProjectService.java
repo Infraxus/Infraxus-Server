@@ -1,7 +1,8 @@
 package com.infraxus.application.server.server.service;
 
-import com.infraxus.application.container.container.domain.Container;
-import com.infraxus.application.container.container.domain.repository.ContainerRepository;
+import com.infraxus.application.container.domain.Container;
+import com.infraxus.application.container.domain.repository.ContainerRepository;
+import com.infraxus.application.container.domain.value.ContainerKey;
 import com.infraxus.application.server.resources.presentation.dto.ServerResourcesCreateRequest;
 import com.infraxus.application.server.resources.service.implementation.ServerResourcesCreator;
 import com.infraxus.application.server.server.presentation.dto.ContainerCreateRequest;
@@ -9,6 +10,7 @@ import com.infraxus.application.server.server.domain.Server;
 import com.infraxus.application.server.server.domain.repository.ServerRepository;
 import com.infraxus.application.server.server.domain.value.ServerState;
 import com.infraxus.application.server.server.presentation.dto.ServerCreateRequest;
+import com.infraxus.global.docker.DockerComposeService;
 import com.infraxus.global.jenkins.JenkinsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -44,14 +46,9 @@ public class MsaProjectService {
         Path composePath = projectPath.resolve("docker-compose.yml");
         dockerComposeService.initialize(composePath);
 
-        // 인프라 서비스 프로비저닝
-        provisionInfrastructureService("config-server", request.getServerName(), projectPath, "8888:8888");
-        provisionInfrastructureService("eureka-server", request.getServerName(), projectPath, "8761:8761");
-        provisionInfrastructureService("api-gateway", request.getServerName(), projectPath, "8000:8000");
-
         // 메인 애플리케이션 마이크로서비스 프로비저닝 (MsaProjectRequest의 필드 사용)
         for (ContainerCreateRequest microserviceContainer : request.getServerContainers()) {
-            provisionApplicationMicroservice(request.getArchitectureType().toString(), microserviceContainer, projectPath, request.getServerResources());
+//            provisionApplicationMicroservice(request.getArchitectureType().toString(), microserviceContainer, projectPath, request.getServerResources());
             provisionCustomMicroservice(request.getServerName(), projectPath, microserviceContainer, request.getServerResources());
         }
     }
@@ -64,7 +61,7 @@ public class MsaProjectService {
         String imageName = "infraxus/" + jobName;
         String pipelineScript = generateJenkinsPipelineScript(servicePath.toAbsolutePath().toString(), imageName, "Dockerfile", "./gradlew build --no-daemon");
         try {
-            jenkinsService.createJob(jobName, pipelineScript);
+            jenkinsService.createOrUpdateJob(jobName, pipelineScript);
             jenkinsService.triggerJob(jobName);
         } catch (IOException e) {
             System.err.println("Failed to create or trigger Jenkins job for infrastructure service: " + serviceType + ". Error: " + e.getMessage());
@@ -113,8 +110,10 @@ public class MsaProjectService {
         String portMapping = externalPort + ":" + internalPort;
 
         Container container = Container.builder()
-                .containerId(UUID.randomUUID())
-                .serverId(server.getServerId())
+                .containerKey(new ContainerKey(
+                        server.getServerId(),
+                        UUID.randomUUID()
+                ))
                 .containerName(serviceName)
                 .buildCount(0)
                 .containerDescription(request.getContainerDescription() != null ? request.getContainerDescription() : "Main application microservice for " + request.getContainerName())
@@ -130,11 +129,16 @@ public class MsaProjectService {
                 .build();
         containerRepository.save(container);
 
+        // Dockerfile 생성
+        Path dockerfilePath = servicePath.resolve("Dockerfile");
+        String dockerfileContent = generateDockerfileContent(request);
+        Files.write(dockerfilePath, dockerfileContent.getBytes());
+
         String jobName = request.getContainerName() + "-" + serviceType;
         String imageName = "infraxus/" + jobName;
-        String pipelineScript = generateJenkinsPipelineScript(servicePath.toAbsolutePath().toString(), imageName, "Dockerfile", "./gradlew build --no-daemon");
+        String pipelineScript = generateJenkinsPipelineScript(servicePath.toAbsolutePath().toString(), imageName, dockerfilePath.getFileName().toString(), "./gradlew build --no-daemon");
         try {
-            jenkinsService.createJob(jobName, pipelineScript);
+            jenkinsService.createOrUpdateJob(jobName, pipelineScript);
             jenkinsService.triggerJob(jobName);
         } catch (IOException e) {
             // Handle the exception, e.g., log it or throw a custom exception
@@ -182,8 +186,10 @@ public class MsaProjectService {
         String portMapping = externalPort + ":" + internalPort;
 
         Container container = Container.builder()
-                .containerId(UUID.randomUUID())
-                .serverId(server.getServerId())
+                .containerKey(new ContainerKey(
+                        server.getServerId(),
+                        UUID.randomUUID()
+                ))
                 .containerName(serviceName)
                 .buildCount(0)
                 .containerDescription(microserviceContainer.getContainerDescription() != null ? microserviceContainer.getContainerDescription() : "Custom microservice for " + projectName)
@@ -199,14 +205,18 @@ public class MsaProjectService {
                 .build();
         containerRepository.save(container);
 
+        // Dockerfile 생성
+        Path dockerfilePath = servicePath.resolve("Dockerfile");
+        String dockerfileContent = generateDockerfileContent(microserviceContainer);
+        Files.write(dockerfilePath, dockerfileContent.getBytes());
+
         String jobName = projectName + "-" + microserviceContainer.getContainerName();
         String imageName = "infraxus/" + jobName;
-        String dockerfilePath = microserviceContainer.getDockerfilePath() != null ? microserviceContainer.getDockerfilePath() : "Dockerfile";
         String buildCommand = "./gradlew build --no-daemon";
 
-        String pipelineScript = generateJenkinsPipelineScript(servicePath.toAbsolutePath().toString(), imageName, dockerfilePath, buildCommand);
+        String pipelineScript = generateJenkinsPipelineScript(servicePath.toAbsolutePath().toString(), imageName, dockerfilePath.getFileName().toString(), buildCommand);
         try {
-            jenkinsService.createJob(jobName, pipelineScript);
+            jenkinsService.createOrUpdateJob(jobName, pipelineScript);
             jenkinsService.triggerJob(jobName);
         } catch (IOException e) {
             // Handle the exception, e.g., log it or throw a custom exception
@@ -263,4 +273,56 @@ public class MsaProjectService {
         }
         """, buildCommand, imageName, dockerfilePath, contextPath);
     }
+
+    private String generateDockerfileContent(ContainerCreateRequest request) {
+        String framework = request.getFramework().toLowerCase();
+
+        switch (framework) {
+            case "springboot":
+                return """
+                   FROM openjdk:17-jdk-slim
+                   WORKDIR /app
+                   COPY build/libs/*.jar app.jar
+                   ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+                   """;
+
+            case "express":
+            case "nest":
+                return """
+                   FROM node:18-alpine
+                   WORKDIR /usr/src/app
+                   COPY package*.json ./
+                   RUN npm install
+                   COPY . .
+                   EXPOSE """ + request.getInternalPort() + """
+                   CMD ["node", "dist/main.js"]
+                   """;
+
+            case "django":
+                return """
+                   FROM python:3.9-slim
+                   WORKDIR /app
+                   COPY requirements.txt .
+                   RUN pip install --no-cache-dir -r requirements.txt
+                   COPY . .
+                   EXPOSE %s
+                   CMD ["gunicorn", "projectname.wsgi:application", "--bind", "0.0.0.0:%s"]
+                   """.formatted(request.getInternalPort(), request.getInternalPort());
+
+            case "fastapi":
+                return """
+                   FROM python:3.9-slim
+                   WORKDIR /app
+                   COPY requirements.txt .
+                   RUN pip install --no-cache-dir -r requirements.txt
+                   COPY . .
+                   EXPOSE %s
+                   CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "%s"]
+                   """.formatted(request.getInternalPort(), request.getInternalPort());
+
+            default:
+                return "# Dockerfile for " + request.getFramework() + " not configured. Please create it manually.";
+        }
+    }
+
 }

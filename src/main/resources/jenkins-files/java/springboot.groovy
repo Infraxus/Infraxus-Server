@@ -1,5 +1,1 @@
-stage('Java Build - Spring Boot') {
-    steps {
-        sh 'mvn clean package -DskipTests'
-    }
-}
+sh './gradlew clean build -x test'

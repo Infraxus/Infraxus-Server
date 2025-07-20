@@ -26,8 +26,6 @@ public class Setting {
 
     private Integer memoryLimit;
 
-    private Integer gpuLimit;
-
     private Integer storageLimit;
 
 }

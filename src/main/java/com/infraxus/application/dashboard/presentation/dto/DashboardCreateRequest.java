@@ -12,17 +12,17 @@ import java.util.UUID;
 public class DashboardCreateRequest {
     private Integer totalServers;
     private Integer runningServers;
-    private Integer errorServers;
-    private Integer errorServerList;
+    private Integer stopServers;
+    private Integer stopServerList;
     private Integer recentBuiltServerList;
     private Integer runningServerList;
 
     @Builder
-    public DashboardCreateRequest(Integer totalServers, Integer runningServers, Integer errorServers, Integer errorServerList, Integer recentBuiltServerList, Integer runningServerList) {
+    public DashboardCreateRequest(Integer totalServers, Integer runningServers, Integer stopServers, Integer stopServerList, Integer recentBuiltServerList, Integer runningServerList) {
         this.totalServers = totalServers;
         this.runningServers = runningServers;
-        this.errorServers = errorServers;
-        this.errorServerList = errorServerList;
+        this.stopServers = stopServers;
+        this.stopServerList = stopServerList;
         this.recentBuiltServerList = recentBuiltServerList;
         this.runningServerList = runningServerList;
     }
@@ -32,8 +32,8 @@ public class DashboardCreateRequest {
                 .dashboardId(UUID.randomUUID())
                 .totalServers(this.totalServers)
                 .runningServers(this.runningServers)
-                .errorServers(this.errorServers)
-                .errorServerList(this.errorServerList)
+                .stopServers(this.stopServers)
+                .stopServerList(this.stopServerList)
                 .recentBuiltServerList(this.recentBuiltServerList)
                 .runningServerList(this.runningServerList)
                 .build();

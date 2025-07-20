@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  monolithic-server:
+    image: 
+    build:
+      context: .
+      dockerfile: monolithic-server-Dockerfile
+    ports:
+      - "8081:8081"
+    volumes:
+      - test-server-monolithic_monolithic-server_default_vol:/app/data
+
+volumes:
+  test-server-monolithic_monolithic-server_default_vol:

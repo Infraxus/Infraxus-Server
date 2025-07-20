@@ -1,7 +1,6 @@
 package com.infraxus.application.monitoring.service;
 
 import com.infraxus.application.monitoring.presentation.dto.MetricResponse;
-import com.infraxus.application.server.resources.domain.ServerResources;
 import com.infraxus.application.server.resources.domain.repository.ServerResourcesRepository;
 import com.infraxus.application.server.server.domain.Server;
 import com.infraxus.application.server.server.domain.repository.ServerRepository;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import lombok.RequiredArgsConstructor;
-import com.infraxus.global.loki.service.LoggingService;
 import com.infraxus.application.alarm.alert.service.AlertingService;
 
 import java.util.List;
@@ -22,7 +20,6 @@ public class SystemHealthCheckService {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemHealthCheckService.class);
 
-    private final LoggingService loggingService;
     private final AlertingService alertingService;
     private final MonitoringService monitoringService;
     private final ServerRepository serverRepository;
@@ -97,7 +94,6 @@ public class SystemHealthCheckService {
     @Scheduled(fixedRateString = "${infraxus.scheduling.loggingIntervalMs:300000}")
     public void performLoggingTasks() {
         logger.info("Performing scheduled logging tasks...");
-        loggingService.processScheduledLogs();
         logger.info("Logging tasks completed.");
     }
 

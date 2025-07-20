@@ -1,6 +1,7 @@
 package com.infraxus.application.alarm.alert.presentation.dto;
 
 import com.infraxus.application.alarm.alert.domain.Alert;
+import com.infraxus.application.alarm.alert.domain.value.AlertKey;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,9 +29,11 @@ public class AlertCreateRequest {
 
     public Alert toEntity() {
         return Alert.builder()
-                .alertId(UUID.randomUUID())
-                .containerId(this.containerId)
-                .serverId(this.serverId)
+                .alertKey(new AlertKey(
+                        UUID.randomUUID(),
+                        this.containerId,
+                        this.serverId
+                ))
                 .alertType(this.alertType)
                 .alertTitle(this.alertTitle)
                 .alertDescription(this.alertDescription)

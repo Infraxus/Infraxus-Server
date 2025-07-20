@@ -12,7 +12,7 @@ services:
       - JENKINS_USERNAME=admin
       - JENKINS_TOKEN=11eab6ea4adbdcd67c0d0e3ccfc186cfe6
     depends_on:
-      cassandra: 
+      cassandra:
         condition: service_healthy
       prometheus:
         condition: service_started

@@ -16,7 +16,6 @@ public class SettingUpdater {
                 .settingId(updatableSetting.getSettingId())
                 .cpuLimit(newSettingData.getCpuLimit())
                 .memoryLimit(newSettingData.getMemoryLimit())
-                .gpuLimit(newSettingData.getGpuLimit())
                 .storageLimit(newSettingData.getStorageLimit())
                 .build();
 

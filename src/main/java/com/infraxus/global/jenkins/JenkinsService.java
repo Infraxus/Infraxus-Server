@@ -32,8 +32,14 @@ public class JenkinsService {
         return jenkinsServer.getJob(jobName);
     }
 
-    public void createJob(String jobName, String xml) throws IOException {
-        jenkinsServer.createJob(jobName, xml);
+    public void createOrUpdateJob(String jobName, String xml) throws IOException {
+        if (jenkinsServer.getJob(jobName) != null) {
+            // Job이 이미 존재하는 경우: 업데이트
+            jenkinsServer.updateJob(jobName, xml);
+        } else {
+            // Job이 없는 경우: 새로 생성
+            jenkinsServer.createJob(jobName, xml);
+        }
     }
 
     public void deleteJob(String jobName) throws IOException {

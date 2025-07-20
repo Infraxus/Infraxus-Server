@@ -2,7 +2,6 @@ package com.infraxus.application.alarm.alert.service;
 
 import com.infraxus.application.alarm.alert.domain.Alert;
 import com.infraxus.application.alarm.alert.presentation.dto.AlertCreateRequest;
-import com.infraxus.application.alarm.alert.presentation.dto.AlertUpdateRequest;
 import com.infraxus.application.alarm.alert.service.implementation.AlertCreator;
 import com.infraxus.application.alarm.alert.service.implementation.AlertDeleter;
 import com.infraxus.application.alarm.alert.service.implementation.AlertReader;
@@ -24,11 +23,6 @@ public class CommandAlertService {
 
     public void createAlert(AlertCreateRequest request){
         alertCreator.save(request.toEntity());
-    }
-
-    public void updateAlert(UUID alertId, AlertUpdateRequest request){
-        Alert alert = queryAlertService.getAlertById(alertId);
-        alertUpdater.update(alert, request.toEntity());
     }
 
     public void deleteAlert(UUID alertId){

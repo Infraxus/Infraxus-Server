@@ -12,14 +12,12 @@ import java.util.UUID;
 public class SettingCreateRequest {
     private Integer cpuLimit;
     private Integer memoryLimit;
-    private Integer gpuLimit;
     private Integer storageLimit;
 
     @Builder
-    public SettingCreateRequest(Integer cpuLimit, Integer memoryLimit, Integer gpuLimit, Integer storageLimit) {
+    public SettingCreateRequest(Integer cpuLimit, Integer memoryLimit, Integer storageLimit) {
         this.cpuLimit = cpuLimit;
         this.memoryLimit = memoryLimit;
-        this.gpuLimit = gpuLimit;
         this.storageLimit = storageLimit;
     }
 
@@ -28,7 +26,6 @@ public class SettingCreateRequest {
                 .settingId(UUID.randomUUID())
                 .cpuLimit(this.cpuLimit)
                 .memoryLimit(this.memoryLimit)
-                .gpuLimit(this.gpuLimit)
                 .storageLimit(this.storageLimit)
                 .build();
     }

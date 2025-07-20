@@ -1,8 +1,8 @@
 package com.infraxus.application.monitoring.service;
 
 import com.infraxus.application.alarm.alert.service.AlertingService;
-import com.infraxus.application.container.container.domain.Container;
-import com.infraxus.application.container.container.domain.repository.ContainerRepository;
+import com.infraxus.application.container.domain.Container;
+import com.infraxus.application.container.domain.repository.ContainerRepository;
 import com.infraxus.application.monitoring.presentation.dto.MetricResponse;
 import com.infraxus.global.docker.DockerService;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +64,7 @@ public class MonitoringService {
 
         for (Container container : allContainers) {
             try {
-                MetricResponse containerMetrics = getContainerMetrics(container.getContainerId());
+                MetricResponse containerMetrics = getContainerMetrics(container.getContainerKey().getContainerId());
                 totalCpuUsage += containerMetrics.getCpuUsage();
                 totalMemoryUsageBytes += containerMetrics.getMemoryUsage();
                 totalMemoryTotal += containerMetrics.getMemoryTotal();
@@ -73,7 +73,7 @@ public class MonitoringService {
                 totalDiskReadBytes += containerMetrics.getDiskReadBytes();
                 totalDiskWriteBytes += containerMetrics.getDiskWriteBytes();
             } catch (Exception e) {
-                logger.warn("Could not retrieve metrics for container {}: {}", container.getContainerId(), e.getMessage());
+                logger.warn("Could not retrieve metrics for container {}: {}", container.getContainerKey().getContainerId(), e.getMessage());
             }
         }
 
@@ -102,22 +102,14 @@ public class MonitoringService {
 
     public void checkDockerContainerStatus() {
         logger.info("Checking Docker container status...");
-        String containerListOutput = dockerService.listAllContainers();
-        List<String> containers = Arrays.asList(containerListOutput.split(""));
+        List<com.github.dockerjava.api.model.Container> containers = dockerService.listAllContainers();
 
-        for (String containerInfo : containers) {
-            if (containerInfo.trim().isEmpty()) continue;
+        for (com.github.dockerjava.api.model.Container container : containers) {
+            String containerId = container.getId();
+            String containerName = container.getNames() != null && container.getNames().length > 0 ? container.getNames()[0].replace("/", "") : "Unknown";
+            String containerStatus = container.getStatus();
 
-            String[] parts = containerInfo.split("	");
-            if (parts.length < 4) {
-                logger.warn("Unexpected container info format: {}", containerInfo);
-                continue;
-            }
-            String containerId = parts[0];
-            String containerName = parts[1];
-            String containerStatus = parts[3];
-
-            if (containerStatus.contains("Exited")) {
+            if (containerStatus != null && containerStatus.contains("Exited")) {
                 String alertMessage = String.format("Docker container '%s' (%s) is in 'Exited' state. Please investigate.", containerName, containerId);
                 logger.warn(alertMessage);
                 alertingService.sendAlert(alertMessage);
@@ -171,7 +163,7 @@ public class MonitoringService {
     }
 
     public MetricResponse getServerMetrics(UUID serverId) {
-        List<Container> containers = containerRepository.findAllByServerId(serverId);
+        List<Container> containers = containerRepository.findAllByContainerKeyServerId(serverId);
         if (containers.isEmpty()) {
             throw new IllegalArgumentException("No containers found for server ID: " + serverId);
         }
@@ -185,7 +177,7 @@ public class MonitoringService {
         double totalDiskWriteBytes = 0.0;
 
         for (Container container : containers) {
-            MetricResponse containerMetrics = getContainerMetrics(container.getContainerId());
+            MetricResponse containerMetrics = getContainerMetrics(container.getContainerKey().getContainerId());
             totalCpuUsage += containerMetrics.getCpuUsage();
             totalMemoryUsageBytes += containerMetrics.getMemoryUsage();
             totalMemoryTotal += containerMetrics.getMemoryTotal();

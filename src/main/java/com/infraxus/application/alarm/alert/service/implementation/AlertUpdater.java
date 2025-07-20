@@ -2,6 +2,7 @@ package com.infraxus.application.alarm.alert.service.implementation;
 
 import com.infraxus.application.alarm.alert.domain.Alert;
 import com.infraxus.application.alarm.alert.domain.repository.AlertRepository;
+import com.infraxus.application.alarm.alert.domain.value.AlertKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,7 @@ public class AlertUpdater {
 
     public void update(Alert updatableAlert, Alert newAlertData){
         Alert updated = updatableAlert.toBuilder()
-                .alertId(updatableAlert.getAlertId())
-                .containerId(newAlertData.getContainerId())
-                .serverId(newAlertData.getServerId())
+                .alertKey(newAlertData.getAlertKey())
                 .alertType(newAlertData.getAlertType())
                 .alertTitle(newAlertData.getAlertTitle())
                 .alertDescription(newAlertData.getAlertDescription())

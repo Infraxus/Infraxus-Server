@@ -27,9 +27,9 @@ public class Dashboard {
 
     private Integer runningServers;
 
-    private Integer errorServers;
+    private Integer stopServers;
 
-    private Integer errorServerList;
+    private Integer stopServerList;
 
     private Integer recentBuiltServerList;
 

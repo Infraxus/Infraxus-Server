@@ -19,12 +19,11 @@ public class AlertReader {
     }
 
     public Alert findById(UUID id){
-        return alertRepository.findById(id)
-                .orElse(null);
+        return alertRepository.findByAlertKeyAlertId(id);
     }
 
     public List<Alert> findAllByContainerId(UUID containerId) {
-        return alertRepository.findAllByContainerId(containerId);
+        return alertRepository.findAllByAlertKeyContainerId(containerId);
     }
 
 }

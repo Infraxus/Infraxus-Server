@@ -2,8 +2,8 @@ package com.infraxus.application.server.server.service.implementation;
 
 import com.infraxus.application.alarm.alert.domain.Alert;
 import com.infraxus.application.alarm.alert.domain.repository.AlertRepository;
-import com.infraxus.application.container.container.domain.Container;
-import com.infraxus.application.container.container.domain.repository.ContainerRepository;
+import com.infraxus.application.container.domain.Container;
+import com.infraxus.application.container.domain.repository.ContainerRepository;
 import com.infraxus.application.server.server.domain.Server;
 import com.infraxus.application.server.server.domain.repository.ServerRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +23,11 @@ public class ServerDeleter {
     @Transactional
     public void delete(Server server) {
         // 1. Find all containers related to the server
-        List<Container> containers = containerRepository.findAllByServerId(server.getServerId());
+        List<Container> containers = containerRepository.findAllByContainerKeyServerId(server.getServerId());
 
         // 2. For each container, find and delete all related alerts
         for (Container container : containers) {
-            List<Alert> alerts = alertRepository.findAllByContainerId(container.getContainerId());
+            List<Alert> alerts = alertRepository.findAllByAlertKeyContainerId(container.getContainerKey().getContainerId());
             alertRepository.deleteAll(alerts);
         }
 

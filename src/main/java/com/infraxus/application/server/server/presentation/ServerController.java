@@ -38,9 +38,15 @@ public class ServerController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{serverId}/restart")
-    public ResponseEntity<Void> restartServer(@PathVariable UUID serverId) {
-        commandServerService.restartServer(serverId);
+    @PostMapping("/{serverId}/startAll")
+    public ResponseEntity<Void> startAllContainers(@PathVariable UUID serverId) {
+        commandServerService.startAllContainersByServerId(serverId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{serverId}/stopAll")
+    public ResponseEntity<Void> stopAllContainers(@PathVariable UUID serverId) {
+        commandServerService.stopAllContainersByServerId(serverId);
         return ResponseEntity.ok().build();
     }
 

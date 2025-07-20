@@ -1,8 +1,6 @@
 package com.infraxus.application.alarm.alert.presentation;
 
 import com.infraxus.application.alarm.alert.domain.Alert;
-import com.infraxus.application.alarm.alert.presentation.dto.AlertCreateRequest;
-import com.infraxus.application.alarm.alert.presentation.dto.AlertUpdateRequest;
 import com.infraxus.application.alarm.alert.service.CommandAlertService;
 import com.infraxus.application.alarm.alert.service.QueryAlertService;
 import lombok.RequiredArgsConstructor;

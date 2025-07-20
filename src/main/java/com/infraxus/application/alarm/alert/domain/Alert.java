@@ -1,11 +1,11 @@
 package com.infraxus.application.alarm.alert.domain;
 
+import com.infraxus.application.alarm.alert.domain.value.AlertKey;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.util.Date;
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,11 +22,7 @@ import lombok.Setter;
 public class Alert {
 
     @PrimaryKey
-    private UUID alertId;
-
-    private UUID containerId;
-
-    private UUID serverId;
+    private AlertKey alertKey;
 
     @CassandraType(type = CassandraType.Name.TEXT)
     private String alertType; // Enum

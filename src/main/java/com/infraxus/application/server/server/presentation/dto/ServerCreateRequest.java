@@ -18,12 +18,6 @@ public class ServerCreateRequest {
     private ArchitectureType architectureType;
     private List<String> skillStack;
     private Boolean rollBack;
-    private java.time.LocalDateTime rebuildTime;
-    private String dockerComposeFilePath;
-    private String jenkinsfilePath;
-
-    private int targetReplicas;
-    private String metricsPort;
 
     private ServerResourcesCreateRequest serverResources;
     private List<ContainerCreateRequest> serverContainers;

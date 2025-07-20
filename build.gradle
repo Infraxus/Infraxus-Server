@@ -37,14 +37,10 @@ dependencies {
     // SonarQube 연동을 위한 WebClient
     // implementation "org.springframework.boot:spring-boot-starter-webflux" // MVC와 충돌 가능성 있어 주석 처리
 
-    // Kubernetes Client (fabric8)
-    implementation "io.fabric8:kubernetes-client:6.10.0"
-
-    // Spring Cloud Kubernetes (fabric8 기반)
-    implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8"
-
-    // Helm/Kustomize CLI 실행 (Shell 명령 실행용)
-    implementation "org.zeroturnaround:zt-exec:1.12"
+    // Docker-Java
+    implementation 'com.github.docker-java:docker-java:3.5.3'
+    implementation 'com.github.docker-java:docker-java-core:3.5.3'
+    implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.5.3'
 
     // Micrometer + Prometheus
     implementation "io.micrometer:micrometer-registry-prometheus"
@@ -71,7 +67,7 @@ dependencies {
 //    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
     // cloud
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    // implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     // implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc' // 필요 시 주석 해제
     // implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // 필요 시 주석 해제
     // implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server' // 필요 시 주석 해제

@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  spring-server:
+    image: infraxus/test-server-spring-server:latest
+    container_name: spring-server
+    ports:
+      - 8081:8081
+    build:
+      context: msa-projects\test-server\spring-server
+      dockerfile: Dockerfile

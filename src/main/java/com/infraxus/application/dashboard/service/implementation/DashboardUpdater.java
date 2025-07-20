@@ -16,8 +16,8 @@ public class DashboardUpdater {
                 .dashboardId(updatableDashboard.getDashboardId())
                 .totalServers(newDashboardData.getTotalServers())
                 .runningServers(newDashboardData.getRunningServers())
-                .errorServers(newDashboardData.getErrorServers())
-                .errorServerList(newDashboardData.getErrorServerList())
+                .stopServers(newDashboardData.getStopServers())
+                .stopServerList(newDashboardData.getStopServerList())
                 .recentBuiltServerList(newDashboardData.getRecentBuiltServerList())
                 .runningServerList(newDashboardData.getRunningServerList())
                 .build();

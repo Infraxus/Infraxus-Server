@@ -4,7 +4,6 @@ import com.infraxus.application.alarm.alarm.domain.value.AlarmId;
 import com.infraxus.application.alarm.alert.domain.Alert;
 import com.infraxus.application.alarm.alert.domain.repository.AlertRepository;
 import com.infraxus.application.alarm.alarm.domain.Alarm;
-import com.infraxus.application.container.log.domain.ContainerLog;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,37 +29,6 @@ public class AlertingService {
         
     }
 
-    public void createAlertFromLog(ContainerLog log) {
-        // Determine alert type based on log level
-        String alertType;
-        switch (log.getLogLevel().toUpperCase()) {
-            case "ERROR":
-                alertType = "ERROR";
-                break;
-            case "WARN":
-                alertType = "WARN";
-                break;
-            case "INFO":
-            default:
-                alertType = "INFO";
-                break;
-        }
-
-        Alert alert = Alert.builder()
-                .alertId(UUID.randomUUID())
-                .containerId(log.getContainerId())
-                .serverId(log.getServerId())
-                .alertType(alertType)
-                .alertTitle("Log Alert: " + log.getLogTitle())
-                .alertDescription(log.getLogContent())
-                .createAt(new Date())
-                .build();
-
-        alertRepository.save(alert);
-        logger.info("Alert created from log: AlertId={}, ServerId={}, ContainerId={}, Type={}", alert.getAlertId(), alert.getServerId(), alert.getContainerId(), alert.getAlertType());
-        // As per requirements, Alert should not be deleted or modified.
-    }
-
     @Scheduled(fixedRate = 60000) // Every 1 minute
     public void updateAlarmsBasedOnAlerts() {
         logger.info("Updating alarms based on alerts...");
@@ -68,7 +36,7 @@ public class AlertingService {
 
         // Group alerts by serverId and containerId to update corresponding alarms
         allAlerts.stream()
-                .collect(Collectors.groupingBy(alert -> AlarmId.builder().containerId(alert.getContainerId()).serverId(alert.getServerId()).build()))
+                .collect(Collectors.groupingBy(alert -> AlarmId.builder().containerId(alert.getAlertKey().getContainerId()).serverId(alert.getAlertKey().getServerId()).build()))
                 .forEach((alarmId, alertsForAlarm) -> {
                     int criticalCount = 0;
                     int warningCount = 0;
@@ -121,7 +89,7 @@ public class AlertingService {
         if (!criticalAndWarningAlerts.isEmpty()) {
             for (Alert alert : criticalAndWarningAlerts) {
                 String alertMessage = String.format("Severity: %s, Title: %s, Description: %s (Server: %s, Container: %s)",
-                        alert.getAlertType(), alert.getAlertTitle(), alert.getAlertDescription(), alert.getServerId(), alert.getContainerId());
+                        alert.getAlertType(), alert.getAlertTitle(), alert.getAlertDescription(), alert.getAlertKey().getServerId(), alert.getAlertKey().getContainerId());
                 sendAlert(alertMessage);
             }
             logger.info("Sent {} critical/warning alerts.", criticalAndWarningAlerts.size());
